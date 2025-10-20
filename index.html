@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كورس Smarter With AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel for JSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        // Set theme on initial load to prevent FOUC (Flash of Unstyled Content)
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-dark: #141c29;
+            --primary-dark: #1e2d44;
+            --accent-green: #92b43b;
+            --accent-navy: #1e2d44;
+            --text-light: #fbf9f4;
+            --text-dark: #1e2d44;
+            --bg-light: #fbf9f4;
+            --primary-light: #ffffff;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--bg-light);
+        }
+        
+        .dark body {
+            background-color: var(--bg-dark);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .animate-fadeIn { animation: fadeIn 1s ease-in-out forwards; }
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-in-out forwards; }
+        
+        .tab-content-anim {
+             animation: fadeInUp 0.5s ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1.02);
+                box-shadow: 0 0 8px var(--accent-green), 0 0 12px var(--accent-navy);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 16px var(--accent-green), 0 0 24px var(--accent-navy);
+            }
+        }
+        .pulse-animate {
+            animation: pulse-glow 2.2s infinite ease-in-out;
+        }
+
+        @keyframes blink-caret {
+          from, to { border-color: transparent }
+          50% { border-color: var(--accent-green); }
+        }
+        
+        .typewriter-anim {
+            overflow: hidden; white-space: nowrap; margin: 0 auto; letter-spacing: .05em;
+            display: inline-block; /* Fixes cursor position */
+            vertical-align: top; /* Ensures proper alignment */
+            animation: blink-caret .75s step-end infinite; /* Re-enables blinking */
+        }
+        .typewriter-ltr { border-right: .15em solid var(--accent-green); }
+        .typewriter-rtl { border-left: .15em solid var(--accent-green); }
+
+        .video-container {
+            position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
+            height: 0; overflow: hidden; border-radius: 0.5rem;
+        }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        .content-card {
+            background-color: var(--primary-light);
+            border-top: 4px solid var(--accent-navy);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(30, 45, 68, 0.1), 0 4px 6px -2px rgba(30, 45, 68, 0.05);
+        }
+        .dark .content-card {
+            background-color: var(--primary-light);
+            border-color: var(--accent-green);
+            color: var(--text-dark);
+        }
+        .dark .content-card:hover {
+             box-shadow: 0 10px 15px -3px rgba(146, 180, 59, 0.1), 0 4px 6px -2px rgba(146, 180, 59, 0.07);
+        }
+
+        .page-title {
+            color: var(--accent-navy);
+        }
+        .dark .page-title {
+            color: var(--accent-navy);
+        }
+
+        .section-header {
+             color: var(--accent-navy);
+        }
+        .dark .section-header {
+             color: var(--accent-green);
+        }
+        
+        .subsection-title {
+            background-color: var(--accent-green);
+            color: var(--text-light);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .dark .subsection-title {
+            background-color: var(--accent-green);
+            color: var(--accent-navy);
+            font-weight: 700;
+        }
+        .subsection-title i {
+            color: var(--text-light) !important;
+        }
+        .dark .subsection-title i {
+            color: var(--accent-navy) !important;
+        }
+        
+        .accordion-header[aria-expanded="true"] {
+            background-color: rgba(146, 180, 59, 0.05);
+        }
+        .dark .accordion-header[aria-expanded="true"] {
+             background-color: rgba(146, 180, 59, 0.1);
+        }
+        
+        .bottom-nav-active { 
+            color: #ffffff; 
+            transform: scale(1.1); 
+        }
+        .bottom-nav-active > span { font-weight: 700; }
+
+        input[type="checkbox"] {
+            accent-color: var(--accent-green);
+        }
+    </style>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark text-text-dark dark:text-text-light transition-colors duration-300">
+    
+    <div id="welcome-screen" class="fixed inset-0 bg-[#1e2d44] flex flex-col justify-center items-center z-50 transition-opacity duration-700">
+        <div class="w-full flex flex-col items-center text-center">
+            <img src="https://i.ibb.co/mrxY5d8z/Untitled-design-1.png" alt="Smarter With AI Logo" class="w-32 h-32 mx-auto mb-6 rounded-full bg-white p-2 shadow-lg animate-fadeIn" style="animation-delay: 0.5s;">
+            <h1 id="welcome-title" dir="ltr" class="text-4xl sm:text-5xl font-bold text-[--text-light] mb-4 min-h-[56px] sm:min-h-[60px]"></h1>
+            <p id="welcome-subtitle" class="text-lg sm:text-xl text-[--accent-green] mt-2 min-h-[40px] sm:min-h-[44px]"></p>
+            <button id="start-btn" class="mt-12 bg-gradient-to-r from-[--accent-green] to-[--accent-navy] text-white font-bold py-3 px-10 rounded-lg text-xl transition-all transform opacity-0">
+                ابدأ الآن
+            </button>
+        </div>
+    </div>
+
+    <div id="root" class="hidden"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useRef, useMemo } = React;
+
+        // Icon.tsx
+        const Icon = ({ name, className }) => {
+            const wrapperRef = useRef(null);
+
+            useEffect(() => {
+                if (wrapperRef.current && window.lucide) {
+                    const i = document.createElement('i');
+                    i.setAttribute('data-lucide', name);
+                    
+                    wrapperRef.current.innerHTML = ''; 
+                    wrapperRef.current.appendChild(i);
+                    
+                    window.lucide.createIcons({ nodes: [i] });
+
+                    const svg = wrapperRef.current.querySelector('svg');
+                    if (svg && className) {
+                        className.split(' ').forEach(cls => {
+                            if (cls) svg.classList.add(cls);
+                        });
+                    }
+                }
+            }, [name, className]);
+
+            return <span ref={wrapperRef} />;
+        };
+
+        // Reminder.tsx
+        const Reminder = ({ children }) => {
+            return (
+                <div className="mb-6 p-4 border-r-4 border-[--accent-green] bg-green-50 dark:bg-slate-800 rounded-lg shadow-md flex items-start gap-4">
+                    <Icon name="brain-circuit" className="w-8 h-8 text-[--accent-green] flex-shrink-0 mt-1" />
+                    <div>
+                        <h3 className="text-lg font-bold section-header mb-1">رسالة من مساعدك الذكي</h3>
+                        <p className="text-gray-700 dark:text-gray-300 text-sm">{children}</p>
+                    </div>
+                </div>
+            );
+        };
+
+        // GlobalProgressBar.tsx
+        const GlobalProgressBar = ({ title, progress, completedCount, totalCount, icon }) => {
+            return (
+                <div className="content-card p-4 rounded-lg shadow-md">
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="section-header text-lg font-bold flex items-center gap-2">
+                            <Icon name={icon} />
+                            <span>{title}</span>
+                        </h3>
+                        <span className="font-bold text-[--accent-green]">{Math.round(progress)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div className="bg-[--accent-green] h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">
+                        {`أكملت ${completedCount} من ${totalCount}`}
+                    </p>
+                </div>
+            );
+        };
+
+        // Accordion.tsx
+        const Accordion = ({ title, isOpen, onToggle, children, progress }) => {
+            const contentRef = useRef(null);
+            const isComplete = progress === 100;
+
+            return (
+                <div className="content-card rounded-lg overflow-hidden shadow-md">
+                    <button
+                        aria-expanded={isOpen}
+                        className="accordion-header w-full text-right p-5 flex flex-col text-lg sm:text-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-100 focus:outline-none"
+                        onClick={onToggle}
+                    >
+                        <div className="flex justify-between items-center w-full">
+                            <span className="flex items-center gap-2 text-right">
+                                {isComplete && <Icon name="check-circle-2" className="text-[--accent-green]" />}
+                                {title}
+                            </span>
+                            <Icon name="chevron-down" className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                        </div>
+                        {progress !== undefined && progress > 0 && (
+                             <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 mt-3">
+                                 <div className="bg-[--accent-green] h-1.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                             </div>
+                        )}
+                    </button>
+                    <div
+                        ref={contentRef}
+                        className="accordion-content"
+                        style={{ maxHeight: isOpen ? contentRef.current?.scrollHeight + "px" : undefined }}
+                    >
+                        <div className="p-5 border-t border-gray-200 space-y-6">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Header.tsx
+        const Header = ({ theme, onThemeToggle }) => {
+            return (
+                <header className="bg-gradient-to-r from-[--accent-green] to-[--accent-navy] p-4 shadow-lg flex justify-between items-center sticky top-0 z-40">
+                    <div className="text-center flex-grow">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-wider" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.2)' }}>
+                            Smarter With AI
+                        </h1>
+                    </div>
+                    <button id="theme-toggle" onClick={onThemeToggle} className="p-2 rounded-full text-white hover:bg-white/20 transition-colors">
+                        <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+                    </button>
+                </header>
+            );
+        };
+
+        // BottomNav.tsx
+        const NavButton = ({ tabId, icon, label, activeTab, onClick }) => {
+            const isActive = activeTab === tabId;
+            return (
+                <button
+                    onClick={() => onClick(tabId)}
+                    className={`bottom-tab-button flex flex-col items-center gap-1 text-white/70 hover:text-white w-full p-1 transition-all duration-200 ${isActive ? 'bottom-nav-active' : ''}`}
+                >
+                    <Icon name={icon} className="w-6 h-6" />
+                    <span className="text-xs">{label}</span>
+                </button>
+            );
+        };
+
+        const BottomNav = ({ activeTab, onTabChange }) => {
+            const navItems = [
+                { tabId: 'home', icon: 'home', label: 'الرئيسية' },
+                { tabId: 'lectures', icon: 'book-open', label: 'المحاضرات' },
+                { tabId: 'tasks', icon: 'clipboard-list', label: 'التاسكات' },
+                { tabId: 'bonus', icon: 'gift', label: 'البونص' },
+                { tabId: 'share', icon: 'heart-handshake', label: 'شاركنا' },
+            ];
+
+            return (
+                <nav className="fixed bottom-0 inset-x-0 bg-gradient-to-r from-[--accent-green] to-[--accent-navy] flex justify-around p-2 z-50 shadow-t-lg">
+                    {navItems.map(item => (
+                        <NavButton
+                            key={item.tabId}
+                            tabId={item.tabId}
+                            icon={item.icon}
+                            label={item.label}
+                            activeTab={activeTab}
+                            onClick={onTabChange}
+                        />
+                    ))}
+                </nav>
+            );
+        };
+
+        // HomeTab.tsx
+        const HomeTab = () => {
+            return (
+                <div className="space-y-6">
+                    <Reminder>
+                        نصيحة هامة: الاستفادة الحقيقية من هذا الكورس تكمن في التطبيق العملي. كل محاضرة هي دعوة لك لتجربة الأدوات بنفسك ورؤية النتائج. استمتع بالرحلة!
+                    </Reminder>
+                    <div className="content-card p-6 rounded-lg shadow-md">
+                        <h3 className="page-title text-2xl sm:text-3xl font-bold mb-4 text-center">أهلاً بك في كورس Smarter With AI!</h3>
+                        <p className="text-center text-gray-700 dark:text-gray-700 mb-8">يسعدنا انضمامك إلينا في هذه الرحلة الشيقة لاستكشاف عالم الذكاء الاصطناعي وكيفية الاستفادة منه في حياتك اليومية والمهنية.</p>
+                        
+                        <div className="video-container shadow-lg mb-8">
+                            <iframe src="https://www.youtube.com/embed/npTasyNEoS4" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Introductory Video"></iframe>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                           <div className="bg-white dark:bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-xl border-2 border-[--accent-green]">
+                               <h4 className="section-header text-xl font-bold mb-4 flex items-center gap-2"><Icon name="info" /><span>نظام الكورس</span></h4>
+                                <ul className="space-y-3 text-gray-700">
+                                    <li className="flex items-start gap-3"><Icon name="check-circle-2" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span>8 أسابيع من التعلم المركز والمكثف.</span></li>
+                                    <li className="flex items-start gap-3"><Icon name="check-circle-2" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span>محتوى أسبوعي: فيديوهات، أدلة، وتاسكات.</span></li>
+                                    <li className="flex items-start gap-3"><Icon name="check-circle-2" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span>تعلم فعال بأحدث أدوات الذكاء الاصطناعي.</span></li>
+                                    <li className="flex items-start gap-3"><Icon name="check-circle-2" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span>جروب دعم وسيشن لايف أسبوعي للمناقشة.</span></li>
+                                    <li className="flex items-start gap-3"><Icon name="check-circle-2" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span>مشروع تخرج نهائي لتطبيق ما تعلمته.</span></li>
+                                </ul>
+                           </div>
+                           <div className="bg-white dark:bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-xl border-2 border-[--accent-green]">
+                                <h4 className="section-header text-xl font-bold mb-4 flex items-center gap-2"><Icon name="layout-grid" /><span>أقسام التطبيق</span></h4>
+                                <ul className="space-y-3 text-gray-700">
+                                     <li className="flex items-start gap-3"><Icon name="arrow-left-circle" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span><span className="font-bold">الرئيسية:</span> نظرة عامة على الكورس.</span></li>
+                                     <li className="flex items-start gap-3"><Icon name="arrow-left-circle" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span><span className="font-bold">المحاضرات:</span> جميع محاضرات وأدلة الكورس.</span></li>
+                                     <li className="flex items-start gap-3"><Icon name="arrow-left-circle" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span><span className="font-bold">التاسكات:</span> المهام العملية الأسبوعية.</span></li>
+                                     <li className="flex items-start gap-3"><Icon name="arrow-left-circle" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span><span className="font-bold">البونص:</span> بنك أدوات ومصادر إضافية.</span></li>
+                                     <li className="flex items-start gap-3"><Icon name="arrow-left-circle" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" /><span><span className="font-bold">شاركنا:</span> لدعمنا ومشاركة رأيك.</span></li>
+                                </ul>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // LecturesTab.tsx
+        const lecturesData = [
+            { 
+                title: "الأسبوع الأول: مدخل إلى عالم الذكاء الاصطناعي", 
+                lectures: [
+                    { title: "دليلك لعالم الذكاء الاصطناعي", url: "https://t.me/c/2947009490/2/111" },
+                    { title: "امكانيات Chatgpt و Gemini", url: "https://t.me/c/2947009490/2/168" },
+                    { title: "مصطلحات مهمة", url: "https://t.me/c/2947009490/2/352" }
+                ],
+                guides: [
+                    { title: "دليلك لعالم الذكاء الاصطناعي", url: "https://drive.google.com/file/d/1XB5D-dpaAVJA3_E-keRZOXelZetVJpOm/view?usp=sharing" },
+                    { title: "الدليل الشامل لهندسة الأوامر", url: "https://drive.google.com/file/d/1LZX_nl6HVji7ECO6JtKJ_F1wJxoz7IF7/view?usp=sharing" },
+                    { title: "Chatgpt كل ما تحتاج معرفته", url: "https://drive.google.com/file/d/1goaRvUC_mKWCDlNmJCeP3RivxtepEoL5/view?usp=sharing" },
+                    { title: "Gemini كل ما تحتاج معرفته", url: "https://drive.google.com/file/d/1VlEvo5AA4uTznymL2tC8USlRFF4N4PAY/view?usp=sharing" }
+                ]
+            },
+            { 
+                title: "الأسبوع الثاني: البحث وبناء مساعد شخصي", 
+                lectures: [
+                    { title: "البحث في عصر الـ AI", url: "https://t.me/c/2947009490/2/169" },
+                    { title: "دليلك لبناء مساعد شخصي", url: "https://t.me/c/2947009490/2/182" }
+                ],
+                guides: [
+                    { title: "البحث في عصر الـ AI", url: "https://drive.google.com/file/d/1HhHulHiHBm6o7c7Yv8yQ1pPSECiWitYk/view?usp=sharing" },
+                    { title: "دليلك لبناء مساعد شخصي", url: "https://drive.google.com/file/d/1-XK3ID_S5NGh--tyanF623yxcU6rvBQI/view?usp=sharing" }
+                ]
+            },
+            { 
+                title: "الأسبوع الثالث: التعلم الفعال والانفوجرافيك", 
+                lectures: [
+                    { title: "التعلم في عصر الـ AI", url: "https://t.me/c/2947009490/2/184" },
+                    { title: "انفوجرافيك احترافي", url: "https://t.me/c/2947009490/2/353" },
+                ],
+                guides: [
+                    { title: "التعلم في عصر الـ AI", url: "https://drive.google.com/file/d/1X8k3Q4kzHiqvMy64y3mKLuZ1zSa9XWHO/view?usp=sharing" },
+                    { title: "انفوجرافيك احترافي", url: "https://drive.google.com/file/d/1Mrs1dokNwlXZygBWNZnqbI1T0fmC-VCi/view?usp=sharing" }
+                ]
+            },
+            { 
+                title: "الأسبوع الرابع: صناعة الصوت", 
+                lectures: [{ title: "ازاي تعمل صوت احترافي", url: "https://t.me/c/2947009490/2/359" }], 
+                guides: [{ title: "الدليل الشامل لجميع المحاضرات", url: "https://drive.google.com/drive/folders/1f6wTxSAmAMpPQDVZBFT0_jvse5SXwPoV?usp=sharing" }]
+            },
+            { 
+                title: "الأسبوع الخامس: صناعة الصور الاحترافية", 
+                lectures: [{ title: "صور احترافية", url: "https://t.me/c/2947009490/2/454" }], 
+                guides: [{ title: "الدليل الشامل لعمل صور احترافية", url: "https://drive.google.com/file/d/1uOyFmbK0FwjE9J1Qru1VYHKgXl0iEKnC/view?usp=sharing" }]
+            },
+            { title: "الأسبوع السادس: صناعة الفيديو الاحترافي", lectures: null, guides: null },
+            { title: "الأسبوع السابع: تطبيقات الذكاء الاصطناعي", lectures: null, guides: null },
+            { title: "الأسبوع الثامن: المشروع النهائي", lectures: null, guides: null },
+        ];
+
+        const LECTURE_COMPLETION_KEY = 'lectureCompletionStatus';
+        const LecturesTab = () => {
+            const [openWeek, setOpenWeek] = useState(lecturesData[0]?.title || null);
+            const [completedLectures, setCompletedLectures] = useState(() => {
+                try {
+                    const saved = localStorage.getItem(LECTURE_COMPLETION_KEY);
+                    return saved ? JSON.parse(saved) : {};
+                } catch (error) {
+                    console.error("Failed to parse lecture completion status from localStorage", error);
+                    return {};
+                }
+            });
+
+            useEffect(() => {
+                localStorage.setItem(LECTURE_COMPLETION_KEY, JSON.stringify(completedLectures));
+            }, [completedLectures]);
+            
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [openWeek, completedLectures]);
+
+            const handleToggleWeek = (title) => {
+                setOpenWeek(prev => (prev === title ? null : title));
+            };
+
+            const handleToggleLecture = (lectureKey) => {
+                setCompletedLectures(prev => ({
+                    ...prev,
+                    [lectureKey]: !prev[lectureKey]
+                }));
+            };
+
+            const { totalLecturesCount, totalCompletedLectures } = useMemo(() => {
+                let total = 0;
+                let completed = 0;
+                lecturesData.forEach(week => {
+                    if (week.lectures) {
+                        total += week.lectures.length;
+                        week.lectures.forEach(lecture => {
+                            if (completedLectures[`${week.title}-${lecture.title}`]) {
+                                completed++;
+                            }
+                        });
+                    }
+                });
+                return { totalLecturesCount: total, totalCompletedLectures: completed };
+            }, [completedLectures]);
+
+            const overallProgress = totalLecturesCount > 0 ? (totalCompletedLectures / totalLecturesCount) * 100 : 0;
+
+            const reminderText = "تذكير بنظامنا الأسبوعي: المحاضرات المسجلة متاحة لك على مدار الأسبوع. وفي نهاية كل أسبوع، نلتقي في سيشن لايف للإجابة على استفساراتك، مناقشة تطبيقات جديدة، وتعميق فهمك للمحتوى. جهّز أسئلتك!";
+
+            return (
+                <div className="space-y-6">
+                    <Reminder>{reminderText}</Reminder>
+                     <GlobalProgressBar 
+                        title="إجمالي تقدم المحاضرات"
+                        progress={overallProgress}
+                        completedCount={totalCompletedLectures}
+                        totalCount={totalLecturesCount}
+                        icon="book-open-check"
+                    />
+                    <div className="space-y-4">
+                        {lecturesData.map(week => {
+                            const totalLectures = week.lectures?.length || 0;
+                            const completedCount = week.lectures?.filter(l => completedLectures[`${week.title}-${l.title}`]).length || 0;
+                            const progress = totalLectures > 0 ? Math.round((completedCount / totalLectures) * 100) : 0;
+
+                            return (
+                                <Accordion
+                                    key={week.title}
+                                    title={week.title}
+                                    isOpen={openWeek === week.title}
+                                    onToggle={() => handleToggleWeek(week.title)}
+                                    progress={progress}
+                                >
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h4 className="subsection-title flex items-center gap-2"><Icon name="play-circle" /> مشاهدة المحاضرات</h4>
+                                            {week.lectures && week.lectures.length > 0 ? (
+                                                <ul className="space-y-2 mt-4">
+                                                    {week.lectures.map((lecture, index) => {
+                                                        const lectureKey = `${week.title}-${lecture.title}`;
+                                                        const isCompleted = !!completedLectures[lectureKey];
+                                                        return (
+                                                            <li key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id={`lecture-${week.title.replace(/\s/g, '-')}-${index}`}
+                                                                    checked={isCompleted}
+                                                                    onChange={() => handleToggleLecture(lectureKey)}
+                                                                    className="h-5 w-5 rounded border-gray-300 cursor-pointer flex-shrink-0"
+                                                                />
+                                                                <div className="flex-grow flex justify-between items-center flex-wrap gap-2">
+                                                                    <label
+                                                                        htmlFor={`lecture-${week.title.replace(/\s/g, '-')}-${index}`}
+                                                                        className={`text-lg cursor-pointer ${isCompleted ? 'line-through text-gray-500' : ''}`}
+                                                                    >
+                                                                        {lecture.title}
+                                                                    </label>
+                                                                    <a
+                                                                        href={lecture.url}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="bg-[--accent-navy] text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-all transform hover:scale-105 dark:bg-[--accent-green] dark:text-[--accent-navy] dark:font-semibold"
+                                                                        aria-label={`Open lecture for ${lecture.title}`}
+                                                                    >
+                                                                        <Icon name="play-circle" className="w-4 h-4" />
+                                                                        <span>مشاهدة</span>
+                                                                    </a>
+                                                                </div>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            ) : week.title === "الأسبوع الثامن: المشروع النهائي" ? (
+                                                <p className="text-gray-700 dark:text-gray-300 text-center p-4">
+                                                    هذا الأسبوع مخصص للمشروع النهائي ولا توجد به محاضرات جديدة.
+                                                </p>
+                                            ) : (
+                                                <p className="text-gray-600 dark:text-gray-400 text-center p-4">المحاضرة ستكون متاحة قريباً بإذن الله.</p>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                                            <h4 className="subsection-title flex items-center gap-2"><Icon name="book-text" /> أدلة الأسبوع</h4>
+                                            {week.guides && week.guides.length > 0 ? (
+                                                <ul className="space-y-2 mt-4">
+                                                    {week.guides.map((guide, index) => (
+                                                        <li key={index}>
+                                                            <a href={guide.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
+                                                                <Icon name="file-text" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
+                                                                <span className="flex-grow">{guide.title}</span>
+                                                                <Icon name="external-link" className="w-5 h-5 text-gray-400" />
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافته قريباً بإذن الله.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </Accordion>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        // TasksTab.tsx
+        const tasksData = [
+            { title: "تاسكات الأسبوع الأول", tasks: ["تجربة 2 Custom gpt مختلفين على Chatgpt.", "مشاركة برومبت احترافي استخدمته وأعطى نتائج جيدة."] },
+            { title: "تاسكات الأسبوع الثاني", tasks: ["عمل بحث شامل عن موضوع من اهتمامك ومشاركته.", "مشاركة رابط المساعد الشخصي الذي قمت ببنائه."] },
+            { title: "تاسكات الأسبوع الثالث", tasks: ["إنشاء ومشاركة Notebook على NotebookLM لموضوع تقوم بتعلمه.", "تصميم ومشاركة انفوجرافيك واحد على الأقل."] },
+            { title: "تاسكات الأسبوع الرابع", tasks: ["إنشاء ومشاركة مقطع صوتي احترافي.", "تجربة تحويل صوت إلى صوت ومشاركة المقطعين.", "تجربة استنساخ صوتك أو أي صوت آخر."] },
+            { title: "تاسكات الأسبوع الخامس", tasks: ["عمل 3 صور على الأقل بأفكار مختلفة."] },
+            { title: "تاسكات الأسبوع السادس", tasks: ["عمل فيديو احترافي واحد على الأقل + افاتار متكلم."] },
+            { title: "تاسكات الأسبوع السابع", tasks: ["عمل تطبيق أو موقع لفكرة أو عمل خاص بك."] },
+            { title: "الأسبوع الثامن: المشروع النهائي", tasks: ["عمل فيديو احترافي كامل (لا يقل عن 30 ثانية) مع مشاركة الأدوات المستخدمة."], isFinal: true },
+        ];
+
+        const TASK_COMPLETION_KEY = 'taskCompletionStatus';
+
+        const TaskCard = ({ item, completedTasks, onToggleTask }) => {
+            const totalTasks = item.tasks.length;
+            const completedCount = item.tasks.filter(task => completedTasks[`${item.title}-${task}`]).length;
+            const progress = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
+            const isHighlighted = progress === 100 || !!item.isFinal;
+
+            return (
+                <div 
+                    className="content-card p-6 rounded-lg shadow-md transition-all"
+                    style={isHighlighted ? { borderTopColor: 'var(--accent-green)' } : {}}
+                >
+                    <h3 className="subsection-title text-xl sm:text-2xl font-bold flex items-center gap-2">
+                        <Icon name={progress === 100 ? 'check-circle' : (item.isFinal ? 'award' : 'list-checks')} />
+                        <span>{item.title}</span>
+                    </h3>
+                    
+                    {totalTasks > 0 && (
+                         <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 my-4">
+                             <div className="bg-[--accent-green] h-2 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                         </div>
+                    )}
+
+                    <ul className="space-y-4 pt-2">
+                        {item.tasks.map((task, index) => {
+                            const taskKey = `${item.title}-${task}`;
+                            const isCompleted = !!completedTasks[taskKey];
+                            return (
+                                <li key={index} className="flex items-center gap-3">
+                                    <input
+                                        type="checkbox"
+                                        id={`task-${item.title}-${index}`}
+                                        checked={isCompleted}
+                                        onChange={() => onToggleTask(taskKey)}
+                                        className="h-5 w-5 rounded border-gray-300 cursor-pointer"
+                                    />
+                                    <label 
+                                        htmlFor={`task-${item.title}-${index}`}
+                                        className={`flex-grow cursor-pointer ${isCompleted ? 'line-through text-gray-500' : ''} ${task.includes("ضروري") ? 'font-semibold' : ''}`}
+                                    >
+                                       {task}
+                                    </label>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            );
+        };
+
+        const TasksTab = () => {
+            const [completedTasks, setCompletedTasks] = useState(() => {
+                try {
+                    const saved = localStorage.getItem(TASK_COMPLETION_KEY);
+                    return saved ? JSON.parse(saved) : {};
+                } catch (error) {
+                    console.error("Failed to parse task completion status from localStorage", error);
+                    return {};
+                }
+            });
+
+            useEffect(() => {
+                localStorage.setItem(TASK_COMPLETION_KEY, JSON.stringify(completedTasks));
+            }, [completedTasks]);
+
+            const handleToggleTask = (taskKey) => {
+                setCompletedTasks(prev => ({
+                    ...prev,
+                    [taskKey]: !prev[taskKey]
+                }));
+            };
+
+            const { totalTasksCount, totalCompletedTasks } = useMemo(() => {
+                let total = 0;
+                let completed = 0;
+                tasksData.forEach(week => {
+                    total += week.tasks.length;
+                    week.tasks.forEach(task => {
+                        if (completedTasks[`${week.title}-${task}`]) {
+                            completed++;
+                        }
+                    });
+                });
+                return { totalTasksCount: total, totalCompletedTasks: completed };
+            }, [completedTasks]);
+
+            const overallProgress = totalTasksCount > 0 ? (totalCompletedTasks / totalTasksCount) * 100 : 0;
+
+            const reminderText = "تذكير مهم: إنجاز التاسكات هو أساس تثبيت المعلومة. لو واجهت أي تحدي، لا تتردد في التواصل معنا على جروب التليجرام أو عبر رسالة خاصة. دعمنا لك مستمر طوال الأسبوع! 💚";
+
+            return (
+                <div className="space-y-6">
+                    <Reminder>{reminderText}</Reminder>
+                    <GlobalProgressBar 
+                        title="إجمالي تقدم التاسكات"
+                        progress={overallProgress}
+                        completedCount={totalCompletedTasks}
+                        totalCount={totalTasksCount}
+                        icon="clipboard-check"
+                    />
+                    <div className="text-center">
+                         <a 
+                            href="https://t.me/c/2947009490/3" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-white bg-gradient-to-r from-[--accent-green] to-[--accent-navy] hover:opacity-90 font-medium rounded-lg text-lg px-8 py-3 text-center transition-transform transform hover:scale-105 inline-flex items-center justify-center gap-2"
+                        >
+                            <Icon name="send" className="w-5 h-5"/>
+                            <span>مشاركة التاسكات على جروب التليجرام</span>
+                        </a>
+                    </div>
+                    <div className="space-y-4">
+                        {tasksData.map((item, index) => (
+                            <TaskCard 
+                                key={index} 
+                                item={item} 
+                                completedTasks={completedTasks}
+                                onToggleTask={handleToggleTask}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // BonusTab.tsx
+        const toolsData = [
+            { 
+                title: "برومبت احترافي", 
+                icon: "brain-circuit", 
+                tools: [
+                    { name: "GeneratePrompt.ai", url: "https://generateprompt.ai/" }, 
+                    { name: "Image to Prompt", url: "https://imageprompt.org/image-to-prompt" },
+                    { name: "Prompt Engineer (GPT)", url: "https://chatgpt.com/g/g-5XtVuRE8Y-prompt-engineer" }
+                ] 
+            },
+            { 
+                title: "صور", 
+                icon: "image", 
+                tools: [
+                    { name: "Midjourney", url: "https://www.midjourney.com/" }, 
+                    { name: "Ideogram", url: "https://ideogram.ai/" }, 
+                    { name: "Google Gemini", url: "https://gemini.google.com/" },
+                    { name: "LMArena.ai", url: "https://lmarena.ai/" },
+                    { name: "Whisk", url: "https://labs.google/fx/tools/whisk?utm_source=substack&utm_medium=email" }
+                ] 
+            },
+            { 
+                title: "صوت", 
+                icon: "audio-lines", 
+                tools: [
+                    { name: "ElevenLabs", url: "https://elevenlabs.io/" }, 
+                    { name: "Google AI Studio", url: "https://aistudio.google.com/" }, 
+                    { name: "Lahajati", url: "https://lahajati.ai/" }, 
+                    { name: "Minimax", url: "https://www.minimax.io/audio" }
+                ] 
+            },
+            { 
+                title: "فيديو", 
+                icon: "video", 
+                tools: [
+                    { name: "Runway", url: "https://runwayml.com/" },
+                    { name: "Flow", url: "https://labs.google/fx/tools/flow/project/ce8fcb35-6af4-4e51-9971-32a76da8aeaf" },
+                    { name: "Sora", url: "https://sora.com/explore" },
+                    { name: "Kling", url: "https://app.klingai.com/global/video-to-lip/new" }
+                ] 
+            },
+            { 
+                title: "تعلم فعال", 
+                icon: "graduation-cap", 
+                tools: [
+                    { name: "NotebookLM", url: "https://notebooklm.google.com/" }, 
+                    { name: "ChatGPT", url: "https://chat.openai.com/" }, 
+                    { name: "Perplexity", url: "https://www.perplexity.ai/" }
+                ] 
+            },
+            { 
+                title: "بريزنتيشن", 
+                icon: "presentation", 
+                tools: [
+                    { name: "Gamma", url: "https://gamma.app/" }, 
+                    { name: "Tome", url: "https://tome.app/" }, 
+                    { name: "Beautiful.ai", url: "https://www.beautiful.ai/" }
+                ] 
+            },
+            { 
+                title: "وكلاء الذكاء الاصطناعي", 
+                icon: "bot", 
+                tools: [
+                    { name: "Genspark", url: "https://www.genspark.com/" }, 
+                    { name: "Skywork", url: "https://skywork.ai/" }, 
+                    { name: "Manus", url: "https://manus.ai/" }, 
+                    { name: "z.ai", url: "https://chat.z.ai/" }
+                ] 
+            }
+        ];
+
+        const BonusTab = () => {
+            const [openAccordion, setOpenAccordion] = useState("recommendations");
+            const [openToolAccordion, setOpenToolAccordion] = useState(null);
+
+            useEffect(() => {
+              if (window.lucide) {
+                window.lucide.createIcons();
+              }
+            }, [openAccordion, openToolAccordion]);
+
+            const handleToggle = (title) => {
+                setOpenAccordion(openAccordion === title ? null : title);
+            };
+
+            const handleToolToggle = (title) => {
+                setOpenToolAccordion(prev => prev === title ? null : title);
+            };
+
+            const reminderText = "ملاحظة هامة: هذا القسم متجدد باستمرار ويضم ترشيحات لأفضل الأدوات والمصادر التي أرى أنها ستضيف قيمة حقيقية لمهاراتك في العمل والدراسة. تفقده دائمًا لاكتشاف الجديد.";
+
+            return (
+                <div className="space-y-8">
+                    <Reminder>{reminderText}</Reminder>
+                    <div className="space-y-4">
+                        <Accordion 
+                            title="ترشيحاتي الخاصة" 
+                            isOpen={openAccordion === "recommendations"} 
+                            onToggle={() => handleToggle("recommendations")}
+                        >
+                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                        </Accordion>
+
+                         <Accordion 
+                            title="مساعدين شخصيين (GPTs)" 
+                            isOpen={openAccordion === "assistants"} 
+                            onToggle={() => handleToggle("assistants")}
+                        >
+                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                        </Accordion>
+                        
+                         <Accordion 
+                            title="مصادر إضافية للتعلم" 
+                            isOpen={openAccordion === "resources"} 
+                            onToggle={() => handleToggle("resources")}
+                        >
+                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                        </Accordion>
+                    </div>
+                    
+                    <div>
+                        <h2 className="page-title text-2xl sm:text-3xl font-bold mb-6 text-center">بنك أدوات الذكاء الاصطناعي</h2>
+                        <div className="space-y-4">
+                            {toolsData.map((category, index) => (
+                                <Accordion
+                                    key={index}
+                                    title={category.title}
+                                    isOpen={openToolAccordion === category.title}
+                                    onToggle={() => handleToolToggle(category.title)}
+                                >
+                                    <h4 className="subsection-title flex items-center gap-3 text-lg sm:text-xl font-bold !mb-4">
+                                        <Icon name={category.icon} />
+                                        <span>{category.title}</span>
+                                    </h4>
+                                    <ul className="list-disc list-inside space-y-2 pr-4 text-text-dark dark:text-gray-300">
+                                        {category.tools.map((tool, toolIndex) => (
+                                            <li key={toolIndex} className="hover:text-[--accent-green]">
+                                                <a href={tool.url} target="_blank" rel="noopener noreferrer">{tool.name}</a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Accordion>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ShareTab.tsx
+        const ShareTab = () => {
+            return (
+                <div className="space-y-6">
+                    <Reminder>
+                        رسالة شكر: رحلتنا معكم ممتعة، وبكم نكبر ونتطور. رأيك يساهم في تحسين الكورس، ودعوتك لأصدقائك توسّع مجتمعنا. هدفنا أن نصبح جميعًا Smarter With AI.
+                    </Reminder>
+                    <div className="content-card p-8 rounded-lg shadow-md max-w-2xl mx-auto text-center">
+                        <Icon name="gift" className="w-16 h-16 mx-auto text-[--accent-green]" />
+                        <h2 className="page-title text-2xl sm:text-3xl font-bold text-center my-4">شارك الكورس مع أحبابك!</h2>
+                        <p className="text-gray-700 mb-2">لأننا مبسوطين بوجودك معانا، نحب نشاركك الفرصة دي عشان أصحابك وحبايبك ينضموا لينا.</p>
+                        <p className="text-gray-700 font-semibold mb-6">احصل على كود دعوة خاص بيك يدي خصم يصل إلى 40% لأي حد من طرفك (تقدر تستخدمه مع 5 أشخاص).</p>
+                        <p className="text-gray-700 mb-8">خليك انت وحبايبك Smarter With AI! 💚</p>
+                        <a href="https://www.facebook.com/messages/t/675407645657010" target="_blank" rel="noopener noreferrer" className="text-white bg-gradient-to-r from-[--accent-green] to-[--accent-navy] hover:opacity-90 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-lg w-full sm:w-auto px-8 py-3 text-center transition-transform transform hover:scale-105 inline-flex items-center justify-center gap-2">
+                            <Icon name="message-circle" />
+                            <span>اطلب كود الدعوة الخاص بيك</span>
+                        </a>
+                    </div>
+                    <div className="content-card p-8 rounded-lg shadow-md max-w-2xl mx-auto text-center">
+                        <h2 className="page-title text-2xl sm:text-3xl font-bold text-center mb-6">نحن نهتم برأيك!</h2>
+                        <p className="text-center text-gray-700 mb-8">مشاركتك تساعدنا على تحسين وتطوير الكورس. اضغط على الزر أدناه لترك رأيك.</p>
+                        <a 
+                            href="https://forms.gle/BFpPvB4yLQT8uQH66" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-white bg-gradient-to-r from-[--accent-green] to-[--accent-navy] hover:opacity-90 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-lg w-full sm:w-auto px-8 py-3 text-center transition-transform transform hover:scale-105 inline-flex items-center justify-center gap-2"
+                        >
+                            <Icon name="file-text" />
+                            <span>شاركنا رأيك الآن</span>
+                        </a>
+                    </div>
+                </div>
+            );
+        };
+
+        // App.tsx
+        const App = () => {
+            const [theme, setTheme] = useState('light');
+            const [activeTab, setActiveTab] = useState('home');
+
+            useEffect(() => {
+                const storedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const initialTheme = storedTheme === 'dark' || (!storedTheme && prefersDark) ? 'dark' : 'light';
+                setTheme(initialTheme);
+            }, []);
+
+            useEffect(() => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                localStorage.setItem('theme', theme);
+            }, [theme]);
+            
+            useEffect(() => {
+                if (window.lucide) {
+                    const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
+                    return () => clearTimeout(timeoutId);
+                }
+            }, [activeTab]);
+
+            const handleThemeToggle = () => {
+                setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+            };
+
+            const handleTabChange = useCallback((tabId) => {
+                setActiveTab(tabId);
+                window.scrollTo(0, 0);
+            }, []);
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'home': return <HomeTab />;
+                    case 'lectures': return <LecturesTab />;
+                    case 'tasks': return <TasksTab />;
+                    case 'bonus': return <BonusTab />;
+                    case 'share': return <ShareTab />;
+                    default: return <HomeTab />;
+                }
+            };
+
+            return (
+                <div id="app-content">
+                    <Header theme={theme} onThemeToggle={handleThemeToggle} />
+                    <main className="container mx-auto p-4 md:p-8 pb-24">
+                        <div className="tab-content-anim">
+                            {renderContent()}
+                        </div>
+                    </main>
+                    <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
+                </div>
+            );
+        };
+
+        // Rendering logic
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(
+            <App />
+        );
+    </script>
+    <script>
+        // Welcome Screen Logic
+        function setupWelcomeScreen() {
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const appContent = document.getElementById('root'); // Target the root div for React
+            const startBtn = document.getElementById('start-btn');
+            const titleEl = document.getElementById('welcome-title');
+            const subtitleEl = document.getElementById('welcome-subtitle');
+            
+            const titleText = "Smarter With AI";
+            const subtitleText = "مبسوطين انك في الكورس معانا 💚";
+
+            function applyTypewriter(element, text, speed, direction, callback) {
+                let i = 0; element.innerHTML = "";
+                element.classList.add('typewriter-anim', (direction === 'ltr' ? 'typewriter-ltr' : 'typewriter-rtl'));
+                function type() {
+                    if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed); } 
+                    else { setTimeout(() => {
+                        element.classList.remove('typewriter-anim', 'typewriter-ltr', 'typewriter-rtl');
+                        element.style.borderRight = 'none'; element.style.borderLeft = 'none';
+                        if (callback) callback();
+                    }, 500); }
+                }
+                type();
+            }
+
+            setTimeout(() => {
+                applyTypewriter(titleEl, titleText, 100, 'ltr', () => {
+                    setTimeout(() => {
+                        applyTypewriter(subtitleEl, subtitleText, 75, 'rtl', () => {
+                            setTimeout(() => {
+                                startBtn.classList.remove('opacity-0');
+                                startBtn.classList.add('animate-fadeInUp', 'pulse-animate');
+                            }, 500);
+                        });
+                    }, 300);
+                });
+            }, 1500);
+
+            startBtn.addEventListener('click', () => {
+                welcomeScreen.classList.add('opacity-0');
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                    if (appContent) {
+                       appContent.classList.remove('hidden'); 
+                    }
+                }, 700);
+            });
+        }
+
+        // Initialize the welcome screen logic
+        document.addEventListener('DOMContentLoaded', () => {
+            setupWelcomeScreen();
+        });
+    </script>
+</body>
+</html>
+
+
