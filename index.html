@@ -93,6 +93,7 @@
         .typewriter-ltr { border-right: .15em solid var(--accent-green); }
         .typewriter-rtl { border-left: .15em solid var(--accent-green); }
 
+
         .video-container {
             position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
             height: 0; overflow: hidden; border-radius: 0.5rem;
@@ -209,7 +210,7 @@
                 }
             }, [name, className]);
 
-            return <span ref={wrapperRef} />;
+            return <span ref={wrapperRef} className="inline-block" />;
         };
 
         // Reminder.tsx
@@ -218,8 +219,8 @@
                 <div className="mb-6 p-4 border-r-4 border-[--accent-green] bg-green-50 dark:bg-slate-800 rounded-lg shadow-md flex items-start gap-4">
                     <Icon name="brain-circuit" className="w-8 h-8 text-[--accent-green] flex-shrink-0 mt-1" />
                     <div>
-                        <h3 className="text-lg font-bold section-header mb-1">رسالة من مساعدك الذكي</h3>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm">{children}</p>
+                        <h3 className="text-lg font-bold text-[--accent-green] mb-1">رسالة من مساعدك الذكي</h3>
+                        <p className="text-gray-700 dark:text-gray-200 text-sm">{children}</p>
                     </div>
                 </div>
             );
@@ -376,6 +377,30 @@
                                 </ul>
                            </div>
                         </div>
+
+                        {/* --- NEW INSTALL INSTRUCTIONS --- */}
+                        <div className="mt-8 bg-white dark:bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-xl border-2 border-[--accent-green]">
+                           <h4 className="section-header text-xl font-bold mb-4 flex items-center gap-2">
+                               <Icon name="download-cloud" />
+                               <span>طريقة تثبيت التطبيق علي الموبايل</span>
+                           </h4>
+                            <ul className="space-y-3 text-gray-700">
+                                <li className="flex items-start gap-3">
+                                    <Icon name="more-vertical" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
+                                    <span>اضغط على الثلاث نقاط في المتصفح من أعلى.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <Icon name="plus-square" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
+                                    <span>اختر "إضافة إلى الشاشة الرئيسية" أو "Add to Home Screen".</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <Icon name="edit-3" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
+                                    <span>أدخل اسم التطبيق ثم اضغط "إضافة" أو "Add".</span>
+                                </li>
+                            </ul>
+                       </div>
+                       {/* --- END OF NEW SECTION --- */}
+
                     </div>
                 </div>
             );
@@ -413,24 +438,47 @@
                 lectures: [
                     { title: "التعلم في عصر الـ AI", url: "https://t.me/c/2947009490/2/184" },
                     { title: "انفوجرافيك احترافي", url: "https://t.me/c/2947009490/2/353" },
+                    { title: "ازاي تعمل بريزنتيشن احترافية", url: "https://t.me/c/2947009490/2/603" },
                 ],
                 guides: [
                     { title: "التعلم في عصر الـ AI", url: "https://drive.google.com/file/d/1X8k3Q4kzHiqvMy64y3mKLuZ1zSa9XWHO/view?usp=sharing" },
-                    { title: "انفوجرافيك احترافي", url: "https://drive.google.com/file/d/1Mrs1dokNwlXZygBWNZnqbI1T0fmC-VCi/view?usp=sharing" }
+                    { title: "انفوجرافيك احترافي", url: "https://drive.google.com/file/d/1Mrs1dokNwlXZygBWNZnqbI1T0fmC-VCi/view?usp=sharing" },
+                    { title: "دليل محاضرة البريزنتيشن", url: "https://drive.google.com/file/d/1zUThIiYjvIe2HUNpQNKsa063DnLnpqbT/view?usp=sharing" },
                 ]
             },
             { 
                 title: "الأسبوع الرابع: صناعة الصوت", 
                 lectures: [{ title: "ازاي تعمل صوت احترافي", url: "https://t.me/c/2947009490/2/359" }], 
-                guides: [{ title: "الدليل الشامل لجميع المحاضرات", url: "https://drive.google.com/drive/folders/1f6wTxSAmAMpPQDVZBFT0_jvse5SXwPoV?usp=sharing" }]
+                guides: [{ title: "الدليل الشامل لجميع المحاضرات", url: "https://drive.google.com/file/d/1SIIryeLOx6bhbTgcSpPRufH_ETe0BjVW/view?usp=sharing" }]
             },
             { 
                 title: "الأسبوع الخامس: صناعة الصور الاحترافية", 
                 lectures: [{ title: "صور احترافية", url: "https://t.me/c/2947009490/2/454" }], 
                 guides: [{ title: "الدليل الشامل لعمل صور احترافية", url: "https://drive.google.com/file/d/1uOyFmbK0FwjE9J1Qru1VYHKgXl0iEKnC/view?usp=sharing" }]
             },
-            { title: "الأسبوع السادس: صناعة الفيديو الاحترافي", lectures: null, guides: null },
-            { title: "الأسبوع السابع: تطبيقات الذكاء الاصطناعي", lectures: null, guides: null },
+            { 
+                title: "الأسبوع السادس: صناعة الفيديو الاحترافي", 
+                lectures: [
+                    { title: "ازاي تعمل فيديوهات احترافية", url: "https://t.me/c/2947009490/2/607" },
+                    { title: "تحديثات هامة حصلت الفترة اللي فاتت", url: "https://t.me/c/2947009490/2/602" },
+                ], 
+                guides: [
+                    { title: "دليل محاضرة الفيديو", url: "https://drive.google.com/file/d/1eKKMabV-j0ELfySbmoeAFjjmMa-4feVQ/view?usp=sharing" }
+                ]
+            },
+            { 
+                title: "الأسبوع السابع: تطبيقات الذكاء الاصطناعي", 
+                lectures: [
+                    { title: "ازاي تحول ال cv بتاعك لموقع احترافي", url: "https://t.me/c/2947009490/2/635" },
+                    { title: "ازاي تصمم مواقع وتطبيقات بمساعدة الذكاء الاصطناعي", url: "https://t.me/c/2947009490/2/648" },
+                    { title: "وكلاء الذكاء الاصطناعي", url: "https://t.me/c/2947009490/2/664" }
+                ], 
+                guides: [
+                    { title: "دليل محاضرة الـ CV", url: "https://drive.google.com/file/d/18GuMDdCAyOmyNMODDKtRjOTr2EL0VpBa/view?usp=sharing" },
+                    { title: "دليل محاضرة المواقع والتطبيقات", url: "https://drive.google.com/file/d/1ArQzQ3Oe7LGFL0ukqgqpnEg_dKJq3bgL/view?usp=sharing" },
+                    { title: "دعوة مجانية لـ Perplexity Pro", url: "https://pplx.ai/mahmoud18h2531" }
+                ]
+            },
             { title: "الأسبوع الثامن: المشروع النهائي", lectures: null, guides: null },
         ];
 
@@ -453,7 +501,8 @@
             
             useEffect(() => {
                 if (window.lucide) {
-                    window.lucide.createIcons();
+                    const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
+                    return () => clearTimeout(timeoutId);
                 }
             }, [openWeek, completedLectures]);
 
@@ -482,7 +531,7 @@
                     }
                 });
                 return { totalLecturesCount: total, totalCompletedLectures: completed };
-            }, [completedLectures]);
+            }, [completedLectures, lecturesData]); // Added lecturesData as dependency
 
             const overallProgress = totalLecturesCount > 0 ? (totalCompletedLectures / totalLecturesCount) * 100 : 0;
 
@@ -552,32 +601,37 @@
                                                     })}
                                                 </ul>
                                             ) : week.title === "الأسبوع الثامن: المشروع النهائي" ? (
-                                                <p className="text-gray-700 dark:text-gray-300 text-center p-4">
+                                                <p className="text-gray-700 text-center p-4">
                                                     هذا الأسبوع مخصص للمشروع النهائي ولا توجد به محاضرات جديدة.
                                                 </p>
                                             ) : (
-                                                <p className="text-gray-600 dark:text-gray-400 text-center p-4">المحاضرة ستكون متاحة قريباً بإذن الله.</p>
+                                                <p className="text-gray-600 text-center p-4">المحاضرة ستكون متاحة قريباً بإذن الله.</p>
                                             )}
                                         </div>
+                                        
+                                        {/* --- MODIFICATION: Hide Guides for Week 8 --- */}
+                                        {week.title !== "الأسبوع الثامن: المشروع النهائي" && (
+                                            <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                                                <h4 className="subsection-title flex items-center gap-2"><Icon name="book-text" /> أدلة الأسبوع</h4>
+                                                {week.guides && week.guides.length > 0 ? (
+                                                    <ul className="space-y-2 mt-4">
+                                                        {week.guides.map((guide, index) => (
+                                                            <li key={index}>
+                                                                <a href={guide.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
+                                                                    <Icon name={guide.title.includes("دعوة") ? "gift" : "file-text"} className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
+                                                                    <span className="flex-grow">{guide.title}</span>
+                                                                    <Icon name="external-link" className="w-5 h-5 text-gray-400" />
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p className="text-gray-600 text-center p-4">سيتم إضافته قريباً بإذن الله.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                        {/* --- END MODIFICATION --- */}
 
-                                        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-                                            <h4 className="subsection-title flex items-center gap-2"><Icon name="book-text" /> أدلة الأسبوع</h4>
-                                            {week.guides && week.guides.length > 0 ? (
-                                                <ul className="space-y-2 mt-4">
-                                                    {week.guides.map((guide, index) => (
-                                                        <li key={index}>
-                                                            <a href={guide.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
-                                                                <Icon name="file-text" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
-                                                                <span className="flex-grow">{guide.title}</span>
-                                                                <Icon name="external-link" className="w-5 h-5 text-gray-400" />
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافته قريباً بإذن الله.</p>
-                                            )}
-                                        </div>
                                     </div>
                                 </Accordion>
                             );
@@ -591,7 +645,7 @@
         const tasksData = [
             { title: "تاسكات الأسبوع الأول", tasks: ["تجربة 2 Custom gpt مختلفين على Chatgpt.", "مشاركة برومبت احترافي استخدمته وأعطى نتائج جيدة."] },
             { title: "تاسكات الأسبوع الثاني", tasks: ["عمل بحث شامل عن موضوع من اهتمامك ومشاركته.", "مشاركة رابط المساعد الشخصي الذي قمت ببنائه."] },
-            { title: "تاسكات الأسبوع الثالث", tasks: ["إنشاء ومشاركة Notebook على NotebookLM لموضوع تقوم بتعلمه.", "تصميم ومشاركة انفوجرافيك واحد على الأقل."] },
+            { title: "تاسكات الأسبوع الثالث", tasks: ["إنشاء ومشاركة Notebook على NotebookLM لموضوع تقوم بتعلمه.", "تصميم ومشاركة انفوجرافيك واحد على الأقل.", "عمل بريزنتيشن احترافية عن موضوع يخص شغلك أو دراستك"] },
             { title: "تاسكات الأسبوع الرابع", tasks: ["إنشاء ومشاركة مقطع صوتي احترافي.", "تجربة تحويل صوت إلى صوت ومشاركة المقطعين.", "تجربة استنساخ صوتك أو أي صوت آخر."] },
             { title: "تاسكات الأسبوع الخامس", tasks: ["عمل 3 صور على الأقل بأفكار مختلفة."] },
             { title: "تاسكات الأسبوع السادس", tasks: ["عمل فيديو احترافي واحد على الأقل + افاتار متكلم."] },
@@ -663,6 +717,9 @@
 
             useEffect(() => {
                 localStorage.setItem(TASK_COMPLETION_KEY, JSON.stringify(completedTasks));
+                 if (window.lucide) {
+                    window.lucide.createIcons();
+                }
             }, [completedTasks]);
 
             const handleToggleTask = (taskKey) => {
@@ -743,6 +800,9 @@
                     { name: "Midjourney", url: "https://www.midjourney.com/" }, 
                     { name: "Ideogram", url: "https://ideogram.ai/" }, 
                     { name: "Google Gemini", url: "https://gemini.google.com/" },
+                    { name: "Google AI Studio", url: "https://aistudio.google.com/prompts/new_chat?model=gemini-2.5-flash-image" },
+                    { name: "Meta AI", url: "https://www.meta.ai/" },
+                    { name: "Copilot", url: "https://copilot.microsoft.com/" },
                     { name: "LMArena.ai", url: "https://lmarena.ai/" },
                     { name: "Whisk", url: "https://labs.google/fx/tools/whisk?utm_source=substack&utm_medium=email" }
                 ] 
@@ -797,13 +857,47 @@
             }
         ];
 
+        const ToolCard = ({ category, isOpen, onToggle }) => {
+            return (
+                 <div className="content-card rounded-lg overflow-hidden shadow-md">
+                    <button
+                        aria-expanded={isOpen}
+                        className="accordion-header w-full text-right p-5 flex items-center justify-between text-lg sm:text-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-100 focus:outline-none"
+                        onClick={onToggle}
+                    >
+                        <span className="flex items-center gap-3">
+                            <Icon name={category.icon} />
+                            <span>{category.title}</span>
+                        </span>
+                        <Icon name="chevron-down" className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <div
+                        className="accordion-content"
+                        style={{ maxHeight: isOpen ? '500px' : '0' }} // Simple max-height, adjust as needed
+                    >
+                        <div className="p-5 border-t border-gray-200">
+                            <ul className="list-disc list-inside space-y-2 pt-4 text-text-dark">
+                                {category.tools.map((tool, index) => (
+                                    <li key={index} className="hover:text-[--accent-green]">
+                                        <a href={tool.url} target="_blank" rel="noopener noreferrer">{tool.name}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+
         const BonusTab = () => {
-            const [openAccordion, setOpenAccordion] = useState("recommendations");
+            const [openAccordion, setOpenAccordion] = useState(null);
             const [openToolAccordion, setOpenToolAccordion] = useState(null);
 
             useEffect(() => {
               if (window.lucide) {
-                window.lucide.createIcons();
+                const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
+                return () => clearTimeout(timeoutId);
               }
             }, [openAccordion, openToolAccordion]);
 
@@ -812,7 +906,7 @@
             };
 
             const handleToolToggle = (title) => {
-                setOpenToolAccordion(prev => prev === title ? null : title);
+                setOpenToolAccordion(openToolAccordion === title ? null : title);
             };
 
             const reminderText = "ملاحظة هامة: هذا القسم متجدد باستمرار ويضم ترشيحات لأفضل الأدوات والمصادر التي أرى أنها ستضيف قيمة حقيقية لمهاراتك في العمل والدراسة. تفقده دائمًا لاكتشاف الجديد.";
@@ -826,7 +920,7 @@
                             isOpen={openAccordion === "recommendations"} 
                             onToggle={() => handleToggle("recommendations")}
                         >
-                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                            <p className="text-gray-700 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
                         </Accordion>
 
                          <Accordion 
@@ -834,7 +928,22 @@
                             isOpen={openAccordion === "assistants"} 
                             onToggle={() => handleToggle("assistants")}
                         >
-                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                            <ul className="space-y-2 mt-4 text-gray-700">
+                                <li>
+                                    <a href="https://t.me/c/2947009490/2/652" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
+                                        <Icon name="play-circle" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
+                                        <span className="flex-grow">المساعدون الشخصيون (المحاضرة)</span>
+                                        <Icon name="external-link" className="w-5 h-5 text-gray-400" />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://mahmoudtaru.github.io/Smarter-Gifts/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
+                                        <Icon name="link" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
+                                        <span className="flex-grow">الرابط بتاعهم (قائمة المساعدين)</span>
+                                        <Icon name="external-link" className="w-5 h-5 text-gray-400" />
+                                    </a>
+                                </li>
+                            </ul>
                         </Accordion>
                         
                          <Accordion 
@@ -842,38 +951,27 @@
                             isOpen={openAccordion === "resources"} 
                             onToggle={() => handleToggle("resources")}
                         >
-                            <p className="text-gray-600 dark:text-gray-400 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                            <p className="text-gray-700 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
                         </Accordion>
                     </div>
                     
                     <div>
-                        <h2 className="page-title text-2xl sm:text-3xl font-bold mb-6 text-center">بنك أدوات الذكاء الاصطناعي</h2>
-                        <div className="space-y-4">
+                        <h2 className="subsection-title text-2xl sm:text-3xl font-bold mb-6 text-center">بنك أدوات الذكاء الاصطناعي</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {toolsData.map((category, index) => (
-                                <Accordion
-                                    key={index}
-                                    title={category.title}
+                                <ToolCard 
+                                    key={index} 
+                                    category={category} 
                                     isOpen={openToolAccordion === category.title}
                                     onToggle={() => handleToolToggle(category.title)}
-                                >
-                                    <h4 className="subsection-title flex items-center gap-3 text-lg sm:text-xl font-bold !mb-4">
-                                        <Icon name={category.icon} />
-                                        <span>{category.title}</span>
-                                    </h4>
-                                    <ul className="list-disc list-inside space-y-2 pr-4 text-text-dark dark:text-gray-300">
-                                        {category.tools.map((tool, toolIndex) => (
-                                            <li key={toolIndex} className="hover:text-[--accent-green]">
-                                                <a href={tool.url} target="_blank" rel="noopener noreferrer">{tool.name}</a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </Accordion>
+                                />
                             ))}
                         </div>
                     </div>
                 </div>
             );
         };
+
 
         // ShareTab.tsx
         const ShareTab = () => {
@@ -992,14 +1090,25 @@
 
             function applyTypewriter(element, text, speed, direction, callback) {
                 let i = 0; element.innerHTML = "";
+                
+                // Add cursor class
                 element.classList.add('typewriter-anim', (direction === 'ltr' ? 'typewriter-ltr' : 'typewriter-rtl'));
+                
                 function type() {
-                    if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed); } 
-                    else { setTimeout(() => {
-                        element.classList.remove('typewriter-anim', 'typewriter-ltr', 'typewriter-rtl');
-                        element.style.borderRight = 'none'; element.style.borderLeft = 'none';
-                        if (callback) callback();
-                    }, 500); }
+                    if (i < text.length) { 
+                        element.innerHTML += text.charAt(i); 
+                        i++; 
+                        setTimeout(type, speed); 
+                    } else { 
+                        // Cursor blink should continue, but remove the border from style
+                        setTimeout(() => {
+                            // Stop animation and remove border class
+                             element.classList.remove('typewriter-anim', 'typewriter-ltr', 'typewriter-rtl');
+                             element.style.borderRight = 'none'; 
+                             element.style.borderLeft = 'none';
+                            if (callback) callback();
+                        }, 500); 
+                    }
                 }
                 type();
             }
@@ -1024,6 +1133,9 @@
                     if (appContent) {
                        appContent.classList.remove('hidden'); 
                     }
+                    if (window.lucide) {
+                        window.lucide.createIcons();
+                    }
                 }, 700);
             });
         }
@@ -1035,5 +1147,3 @@
     </script>
 </body>
 </html>
-
-
