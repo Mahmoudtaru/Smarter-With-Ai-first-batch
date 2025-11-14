@@ -285,6 +285,25 @@
             );
         };
 
+        // Helper component for BonusTab links
+        const RecommendationLink = ({ href, icon, title, description }) => {
+            return (
+                <a 
+                    href={href} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full border-b last:border-b-0"
+                >
+                    <Icon name={icon} className="w-5 h-5 text-[--accent-green] flex-shrink-0 mt-1" />
+                    <div className="flex-grow">
+                        <span className="font-semibold text-gray-800">{title}</span>
+                        {description && <p className="text-sm text-gray-600">{description}</p>}
+                    </div>
+                    <Icon name="external-link" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-1" />
+                </a>
+            );
+        };
+
         // Header.tsx
         const Header = ({ theme, onThemeToggle }) => {
             return (
@@ -516,24 +535,24 @@
                     [lectureKey]: !prev[lectureKey]
                 }));
             };
-
-            const { totalLecturesCount, totalCompletedLectures } = useMemo(() => {
-                let total = 0;
-                let completed = 0;
-                lecturesData.forEach(week => {
-                    if (week.lectures) {
-                        total += week.lectures.length;
-                        week.lectures.forEach(lecture => {
-                            if (completedLectures[`${week.title}-${lecture.title}`]) {
-                                completed++;
-                            }
-                        });
-                    }
-                });
-                return { totalLecturesCount: total, totalCompletedLectures: completed };
-            }, [completedLectures, lecturesData]); // Added lecturesData as dependency
-
+            
+            // --- FIX 1: Recalculate progress on every render ---
+            let total = 0;
+            let completed = 0;
+            lecturesData.forEach(week => {
+                if (week.lectures) {
+                    total += week.lectures.length;
+                    week.lectures.forEach(lecture => {
+                        if (completedLectures[`${week.title}-${lecture.title}`]) {
+                            completed++;
+                        }
+                    });
+                }
+            });
+            const totalLecturesCount = total;
+            const totalCompletedLectures = completed;
             const overallProgress = totalLecturesCount > 0 ? (totalCompletedLectures / totalLecturesCount) * 100 : 0;
+            // --- END FIX 1 ---
 
             const reminderText = "تذكير بنظامنا الأسبوعي: المحاضرات المسجلة متاحة لك على مدار الأسبوع. وفي نهاية كل أسبوع، نلتقي في سيشن لايف للإجابة على استفساراتك، مناقشة تطبيقات جديدة، وتعميق فهمك للمحتوى. جهّز أسئلتك!";
 
@@ -930,45 +949,117 @@
                             onToggle={() => handleToggle("recommendations")}
                         >
                             <div className="text-gray-700 space-y-4">
+                                
+                                {/* --- Section: Design & Editing --- */}
                                 <div>
                                     <h5 className="font-bold text-lg mb-2 text-[--accent-green]">لتعلم التصميم (Canva) والمونتاج (Capcut)</h5>
-                                    <p className="mb-2">بينزل عروض وتخفيضات حلوة جدا للكورسين وبصراحة جامدين:</p>
-                                    <a href="https://t.me/HMcpa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
-                                        <Icon name="link" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
-                                        <span className="flex-grow">هشام مصطفي أكاديمي</span>
-                                        <Icon name="external-link" className="w-5 h-5 text-gray-400" />
-                                    </a>
+                                    {/* --- FIX 2: Reformat Hisham Mostafa --- */}
+                                    <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://t.me/HMcpa"
+                                            icon="video"
+                                            title="هشام مصطفي أكاديمي (كورسات مدفوعة)"
+                                            description="ميزة الكورس: سعر قليل، شامل، جروب متابعة وفيدباك."
+                                        />
+                                        <div className="p-3 bg-gray-50 border-t">
+                                            <span className="font-semibold flex items-center gap-2"><Icon name="youtube" className="w-5 h-5" /> لو عاوز حاجة مجانية (يوتيوب):</span>
+                                        </div>
+                                        <RecommendationLink 
+                                            href="https://youtube.com/playlist?list=PLsO4nF1GHw-NRT6LoFtGm_V57wjk_nncS&si=9Oh0TcO8ViTiJ2jC"
+                                            icon="play-circle"
+                                            title="كورس كانفا مجاني علي اليوتيوب"
+                                        />
+                                        <RecommendationLink 
+                                            href="https://youtu.be/bSiemfHdFtI?si=QgHBFsJO52grQ_yE"
+                                            icon="play-circle"
+                                            title="Capcut يوتيوب (للكمبيوتر)"
+                                        />
+                                        <RecommendationLink 
+                                            href="https://youtube.com/playlist?list=PLs-hceiryD_hjBCEDQMdCRPAhaR8Xemye&si=1NKlVSQ3DZp7kIys"
+                                            icon="play-circle"
+                                            title="Capcut علي الهاتف"
+                                        />
+                                    </div>
+                                    {/* --- END FIX 2 --- */}
                                 </div>
                                 
+                                {/* --- Section: Content Writing --- */}
+                                <div className="border-t pt-4">
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">كتابة محتوى (Content Writing)</h5>
+                                     <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://www.facebook.com/share/p/1EfMGRNcqa/"
+                                            icon="book-copy"
+                                            title="ترشيحات مجانية ومدفوعة"
+                                            description="بوست شامل لأفضل مصادر تعلم كتابة المحتوى"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* --- Section: Media Buying --- */}
+                                <div className="border-t pt-4">
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">ميديا باينج (إعلانات ممولة)</h5>
+                                     <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://www.facebook.com/share/p/19uhZmBKuu/"
+                                            icon="dollar-sign"
+                                            title="افضل الكورسات المتاحة"
+                                            description="بوست يجمع أفضل كورسات الإعلانات الممولة"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* --- Section: Digital Marketing --- */}
+                                <div className="border-t pt-4">
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">Digital Marketing</h5>
+                                     <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://t.me/matrixmena/1000"
+                                            icon="briefcase"
+                                            title="Digital marketing workshop"
+                                            description="ورشة عمل في التسويق الرقمي"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                {/* --- Section: Automation --- */}
                                 <div className="border-t pt-4">
                                     <h5 className="font-bold text-lg mb-2 text-[--accent-green]">لتعلم الأتمتة (Automation)</h5>
-                                    <ul className="space-y-2">
-                                        <li>
-                                            <a href="https://youtu.be/9bMy9C8wIyg?si=WuUN5xmThiWDfgvO" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors w-full">
-                                                <Icon name="play-circle" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
-                                                <span className="flex-grow">مقدمة عن الأتمتة (فيديو)</span>
-                                                <Icon name="external-link" className="w-5 h-5 text-gray-400" />
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <div className="flex items-center gap-3 p-3">
+                                    <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://youtu.be/9bMy9C8wIyg?si=WuUN5xmThiWDfgvO"
+                                            icon="play-circle"
+                                            title="مقدمة عن الأتمتة (فيديو)"
+                                        />
+                                         <RecommendationLink 
+                                            href="https://www.facebook.com/share/p/1B7G57H4KS/"
+                                            icon="file-text"
+                                            title="الأتمتة وأنواعها وخارطة الطريق"
+                                        />
+                                         <RecommendationLink 
+                                            href="https://www.facebook.com/share/p/17aTwCbtsA/"
+                                            icon="map"
+                                            title="خارطة الطريق لتعلمها"
+                                        />
+                                        {/* --- FIX 3: Reformat n8n links --- */}
+                                        <div className="p-3 bg-gray-50 border-t">
+                                            <div className="flex items-center gap-3">
                                                 <Icon name="list-checks" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
                                                 <span className="flex-grow font-semibold">أفضل مصادر مجانية لتعلم n8n (بدون برمجة):</span>
                                             </div>
-                                            <ul className="space-y-2 list-disc list-inside pr-10">
-                                                <li>
-                                                    <a href="https://youtube.com/playlist?list=PLLHIYYlcgk6KN58UnPm8q1btNHLDJlYto&si=DFh8wDJR0dyBD1mT" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green]">
-                                                        n8n with Karim
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://youtube.com/playlist?list=PLZ42ZUInDWC79Bw1K_tYQhUPfFRV7fy8v&si=YAq1RH85DUo7l-Ak" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green]">
-                                                        احترف Agentic AI Engineering باستخدام n8n
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                        <RecommendationLink 
+                                            href="https://youtube.com/playlist?list=PLLHIYYlcgk6KN58UnPm8q1btNHLDJlYto&si=DFh8wDJR0dyBD1mT"
+                                            icon="youtube"
+                                            title="n8n with Karim (Playlist)"
+                                        />
+                                        <RecommendationLink 
+                                            href="https://youtube.com/playlist?list=PLZ42ZUInDWC79Bw1K_tYQhUPfFRV7fy8v&si=YAq1RH85DUo7l-Ak"
+                                            icon="youtube"
+                                            title="احترف Agentic AI Engineering (Playlist)"
+                                        />
+                                        {/* --- END FIX 3 --- */}
+                                    </div>
                                 </div>
                                 
                             </div>
@@ -1002,7 +1093,27 @@
                             isOpen={openAccordion === "resources"} 
                             onToggle={() => handleToggle("resources")}
                         >
-                            <p className="text-gray-700 text-center p-4">سيتم إضافتها قريباً بإذن الله.</p>
+                            <div className="text-gray-700 space-y-4">
+                                <div>
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">أفضل صفحات لمتابعة محتوى الذكاء الاصطناعي</h5>
+                                    {/* MODIFICATION: Removed ul/li, using simple divs */}
+                                    <div className="space-y-3 pt-2">
+                                        <a href="https://drive.google.com/file/d/1qeKaJ8vr8gmBNCR-QLTmLgqXJPcKhFcs/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                            <Icon name="youtube" className="w-5 h-5 text-red-600" />
+                                            <span>يوتيوب</span>
+                                        </a>
+                                        <a href="https://drive.google.com/file/d/1dtRwvwG4B3SqlFgEBxD1zLM8iRWlE8vX/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                            <Icon name="facebook" className="w-5 h-5 text-blue-600" />
+                                            <span>فيسبوك</span>
+                                        </a>
+                                        <a href="https://drive.google.com/file/d/1lOOh_34fP9g8lsiYQtS8WGm1j59evVil/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                            <Icon name="twitter" className="w-5 h-5 text-blue-400" />
+                                            <span>تويتر (X)</span>
+                                        </a>
+                                    </div>
+                                    {/* END MODIFICATION */}
+                                </div>
+                            </div>
                         </Accordion>
                     </div>
                     
