@@ -361,6 +361,18 @@
 
         // HomeTab.tsx
         const HomeTab = () => {
+            // --- NEW STATE for Install Accordion ---
+            const [isInstallAccordionOpen, setInstallAccordionOpen] = useState(false);
+            
+            useEffect(() => {
+                // Ensure icons are created when accordion opens
+                if (isInstallAccordionOpen && window.lucide) {
+                     const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
+                    return () => clearTimeout(timeoutId);
+                }
+            }, [isInstallAccordionOpen]);
+            // --- END NEW STATE ---
+
             return (
                 <div className="space-y-6">
                     <Reminder>
@@ -371,10 +383,10 @@
                         <p className="text-center text-gray-700 dark:text-gray-700 mb-8">يسعدنا انضمامك إلينا في هذه الرحلة الشيقة لاستكشاف عالم الذكاء الاصطناعي وكيفية الاستفادة منه في حياتك اليومية والمهنية.</p>
                         
                         <div className="video-container shadow-lg mb-8">
-                            <iframe src="https://www.youtube.com/embed/npTasyNEoS4" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Introductory Video"></iframe>
+                            <iframe src="https://www.youtube.com/embed/1TWllndZuFI?si=EWBxDPpfB4UEDVIN" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="فيديو تعريفي بنظام الكورس"></iframe>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-6">
+                        <div className="grid md:grid-cols-2 gap-6 mb-6">
                            <div className="bg-white dark:bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-xl border-2 border-[--accent-green]">
                                <h4 className="section-header text-xl font-bold mb-4 flex items-center gap-2"><Icon name="info" /><span>نظام الكورس</span></h4>
                                 <ul className="space-y-3 text-gray-700">
@@ -397,28 +409,37 @@
                            </div>
                         </div>
 
-                        {/* --- NEW INSTALL INSTRUCTIONS --- */}
-                        <div className="mt-8 bg-white dark:bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-xl border-2 border-[--accent-green]">
-                           <h4 className="section-header text-xl font-bold mb-4 flex items-center gap-2">
-                               <Icon name="download-cloud" />
-                               <span>طريقة تثبيت التطبيق علي الموبايل</span>
-                           </h4>
-                            <ul className="space-y-3 text-gray-700">
-                                <li className="flex items-start gap-3">
-                                    <Icon name="more-vertical" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
-                                    <span>اضغط على الثلاث نقاط في المتصفح من أعلى.</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Icon name="plus-square" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
-                                    <span>اختر "إضافة إلى الشاشة الرئيسية" أو "Add to Home Screen".</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Icon name="edit-3" className="w-5 h-5 text-[--accent-green] mt-1 flex-shrink-0" />
-                                    <span>أدخل اسم التطبيق ثم اضغط "إضافة" أو "Add".</span>
-                                </li>
-                            </ul>
-                       </div>
-                       {/* --- END OF NEW SECTION --- */}
+                        {/* --- MODIFIED INSTALL INSTRUCTIONS --- */}
+                        <Accordion
+                            title="طريقة تثبيت التطبيق"
+                            isOpen={isInstallAccordionOpen}
+                            onToggle={() => setInstallAccordionOpen(!isInstallAccordionOpen)}
+                        >
+                            <div className="space-y-4 text-gray-700">
+                                <div>
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green] flex items-center gap-2">
+                                        <Icon name="smartphone" />
+                                        <span>على الموبايل</span>
+                                    </h5>
+                                    <ul className="space-y-2 list-disc list-inside pr-4">
+                                        <li>اضغط على الثلاث نقاط (أو زر المشاركة) في المتصفح.</li>
+                                        <li>اختر "إضافة إلى الشاشة الرئيسية" (Add to Home Screen).</li>
+                                        <li>أدخل اسم التطبيق ثم اضغط "إضافة" (Add).</li>
+                                    </ul>
+                                </div>
+                                <div className="border-t pt-4">
+                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green] flex items-center gap-2">
+                                        <Icon name="laptop" />
+                                        <span>على اللابتوب</span>
+                                    </h5>
+                                    <ul className="space-y-2 list-disc list-inside pr-4">
+                                        <li>اضغط على النجمة (★) في شريط العنوان.</li>
+                                        <li>اختر "Add Bookmark" أو "إضافة إشارة مرجعية".</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </Accordion>
+                       {/* --- END OF MODIFIED SECTION --- */}
 
                     </div>
                 </div>
@@ -804,6 +825,19 @@
         // BonusTab.tsx
         const toolsData = [
             { 
+                title: "استخدام يومي", 
+                icon: "star", 
+                tools: [
+                    { name: "ChatGPT", url: "https://chat.openai.com/" },
+                    { name: "Gemini", url: "https://gemini.google.com/" },
+                    { name: "Copilot", url: "https://copilot.microsoft.com/" },
+                    { name: "Claude", url: "https://claude.ai/" },
+                    { name: "Perplexity", url: "https://www.perplexity.ai/" },
+                    { name: "NotebookLM", url: "https://notebooklm.google.com/" },
+                    { name: "Canva", url: "https://www.canva.com/" }
+                ] 
+            },
+            { 
                 title: "برومبت احترافي", 
                 icon: "brain-circuit", 
                 tools: [
@@ -842,7 +876,9 @@
                     { name: "ElevenLabs", url: "https://elevenlabs.io/" }, 
                     { name: "Google AI Studio", url: "https://aistudio.google.com/" }, 
                     { name: "Lahajati", url: "https://lahajati.ai/" }, 
-                    { name: "Minimax", url: "https://www.minimax.io/audio" }
+                    { name: "Minimax", url: "https://www.minimax.io/audio" },
+                    { name: "Vocloner", url: "https://vocloner.com/" },
+                    { name: "Cartesia", url: "https://play.cartesia.ai/" }
                 ] 
             },
             { 
@@ -1019,6 +1055,12 @@
                                             title="Digital marketing workshop"
                                             description="ورشة عمل في التسويق الرقمي"
                                         />
+                                        {/* --- MOVED HERE (Query 1) --- */}
+                                        <RecommendationLink 
+                                            href="https://youtube.com/playlist?list=PLxe78bIBB8nVGSQbYw6MLKfWuNQmnjKdh&si=7s5NGI-gn7CVgqT-"
+                                            icon="youtube"
+                                            title="كورس التسويق الالكتروني بمساعدة الذكاء الاصطناعي"
+                                        />
                                     </div>
                                 </div>
                                 
@@ -1113,8 +1155,32 @@
                                     </div>
                                     {/* END MODIFICATION */}
                                 </div>
+                                
+                                {/* --- MOVED HERE (Query 3) --- */}
+                                <div className="border-t pt-4">
+                                     <h5 className="font-bold text-lg mb-2 text-[--accent-green]">بودكاست عن الذكاء الاصطناعي</h5>
+                                     <div className="flex flex-col rounded-lg overflow-hidden border">
+                                        <RecommendationLink 
+                                            href="https://youtu.be/7WvKcFsAj6E?si=R0CQAof252pcSUtx"
+                                            icon="podcast"
+                                            title="بودكاست محمد جودت عن حقيقة الـ AI"
+                                            description="بتكلمك عن الذكاء الاصطناعي ،، ايه هو ،، بدأ ازاي ،،اللي وصلناله ،، رايحين لفين..."
+                                        />
+                                        <RecommendationLink 
+                                            href="https://youtu.be/UsODl3Ay0CM?si=ZXGslETVO7EZ-YLP"
+                                            icon="podcast"
+                                            title="بودكاست تطور الذكاء الاصطناعي واغتنام الفرص"
+                                        />
+                                        <RecommendationLink 
+                                            href="https://youtu.be/WjpPDYibONU?si=dN-7w9To4yaKKUxX"
+                                            icon="podcast"
+                                            title="دور العرب في طفرة الذكاء الاصطناعي" /* <-- CORRECTED (Query 2) */
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </Accordion>
+                        {/* --- PODCAST ACCORDION REMOVED FROM HERE --- */}
                     </div>
                     
                     <div>
