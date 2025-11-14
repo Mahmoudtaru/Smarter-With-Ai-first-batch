@@ -167,6 +167,43 @@
         input[type="checkbox"] {
             accent-color: var(--accent-green);
         }
+
+        /* --- Nested Accordion Styles --- */
+        .nested-accordion {
+            background-color: #ffffff; /* Keep it white like the card */
+            border: 1px solid #e9ecef;
+            border-left: 4px solid var(--accent-green); /* Green accent border */
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+        .nested-accordion-header {
+            background-color: #f8f9fa; /* Light grey header */
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: var(--accent-navy);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef; /* Separator */
+        }
+        .nested-accordion-header[aria-expanded="true"] {
+             background-color: #f1f3f5;
+        }
+
+        .nested-accordion-content {
+             max-height: 0;
+             overflow: hidden;
+             transition: max-height 0.3s ease-out;
+             background-color: #ffffff;
+             padding: 0;
+        }
+        .nested-accordion-content-inner {
+            padding: 1rem;
+            /* No top border needed, header has bottom border */
+        }
+
     </style>
 </head>
 <body class="bg-bg-light dark:bg-bg-dark text-text-dark dark:text-text-light transition-colors duration-300">
@@ -275,7 +312,7 @@
                     <div
                         ref={contentRef}
                         className="accordion-content"
-                        style={{ maxHeight: isOpen ? contentRef.current?.scrollHeight + "px" : undefined }}
+                        style={{ maxHeight: isOpen ? '5000px' : '0' }} // FIX: Use large fixed max-height
                     >
                         <div className="p-5 border-t border-gray-200 space-y-6">
                             {children}
@@ -284,6 +321,45 @@
                 </div>
             );
         };
+
+        // --- NEW NestedAccordion Component ---
+        const NestedAccordion = ({ title, icon, isOpen, onToggle, children }) => {
+            const contentRef = useRef(null);
+
+            useEffect(() => {
+                if (isOpen && window.lucide) {
+                     const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
+                    return () => clearTimeout(timeoutId);
+                }
+            }, [isOpen]);
+
+            return (
+                <div className="nested-accordion">
+                    <button
+                        aria-expanded={isOpen}
+                        className="nested-accordion-header w-full"
+                        onClick={onToggle}
+                    >
+                        <span className="flex items-center gap-2">
+                            <Icon name={icon} className="w-5 h-5 text-[--accent-green]" />
+                            <span>{title}</span>
+                        </span>
+                        <Icon name="chevron-down" className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <div
+                        ref={contentRef}
+                        className="nested-accordion-content"
+                        style={{ maxHeight: isOpen ? '5000px' : '0' }} // FIX: Use large fixed max-height
+                    >
+                        <div className="nested-accordion-content-inner text-gray-700 space-y-4">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        // --- END NestedAccordion Component ---
+
 
         // Helper component for BonusTab links
         const RecommendationLink = ({ href, icon, title, description }) => {
@@ -937,7 +1013,7 @@
                     </button>
                     <div
                         className="accordion-content"
-                        style={{ maxHeight: isOpen ? '500px' : '0' }} // Simple max-height, adjust as needed
+                        style={{ maxHeight: isOpen ? '1500px' : '0' }} // FIX: Use large fixed max-height
                     >
                         <div className="p-5 border-t border-gray-200">
                             <ul className="list-disc list-inside space-y-2 pt-4 text-text-dark">
@@ -956,6 +1032,7 @@
 
         const BonusTab = () => {
             const [openAccordion, setOpenAccordion] = useState(null);
+            const [openNestedAccordion, setNestedAccordion] = useState(null);
             const [openToolAccordion, setOpenToolAccordion] = useState(null);
 
             useEffect(() => {
@@ -963,10 +1040,14 @@
                 const timeoutId = setTimeout(() => window.lucide.createIcons(), 0);
                 return () => clearTimeout(timeoutId);
               }
-            }, [openAccordion, openToolAccordion]);
+            }, [openAccordion, openToolAccordion, openNestedAccordion]);
 
             const handleToggle = (title) => {
                 setOpenAccordion(openAccordion === title ? null : title);
+            };
+
+            const handleNestedToggle = (title) => {
+                setNestedAccordion(openNestedAccordion === title ? null : title);
             };
 
             const handleToolToggle = (title) => {
@@ -984,127 +1065,134 @@
                             isOpen={openAccordion === "recommendations"} 
                             onToggle={() => handleToggle("recommendations")}
                         >
-                            <div className="text-gray-700 space-y-4">
-                                
-                                {/* --- Section: Design & Editing --- */}
-                                <div>
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">لتعلم التصميم (Canva) والمونتاج (Capcut)</h5>
-                                    {/* --- FIX 2: Reformat Hisham Mostafa --- */}
-                                    <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://t.me/HMcpa"
-                                            icon="video"
-                                            title="هشام مصطفي أكاديمي (كورسات مدفوعة)"
-                                            description="ميزة الكورس: سعر قليل، شامل، جروب متابعة وفيدباك."
-                                        />
-                                        <div className="p-3 bg-gray-50 border-t">
-                                            <span className="font-semibold flex items-center gap-2"><Icon name="youtube" className="w-5 h-5" /> لو عاوز حاجة مجانية (يوتيوب):</span>
-                                        </div>
-                                        <RecommendationLink 
-                                            href="https://youtube.com/playlist?list=PLsO4nF1GHw-NRT6LoFtGm_V57wjk_nncS&si=9Oh0TcO8ViTiJ2jC"
-                                            icon="play-circle"
-                                            title="كورس كانفا مجاني علي اليوتيوب"
-                                        />
-                                        <RecommendationLink 
-                                            href="https://youtu.be/bSiemfHdFtI?si=QgHBFsJO52grQ_yE"
-                                            icon="play-circle"
-                                            title="Capcut يوتيوب (للكمبيوتر)"
-                                        />
-                                        <RecommendationLink 
-                                            href="https://youtube.com/playlist?list=PLs-hceiryD_hjBCEDQMdCRPAhaR8Xemye&si=1NKlVSQ3DZp7kIys"
-                                            icon="play-circle"
-                                            title="Capcut علي الهاتف"
-                                        />
+                            <NestedAccordion
+                                title="التصميم (Canva) والمونتاج (Capcut)"
+                                icon="video"
+                                isOpen={openNestedAccordion === "design"}
+                                onToggle={() => handleNestedToggle("design")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://t.me/HMcpa"
+                                        icon="video"
+                                        title="هشام مصطفي أكاديمي (كورسات مدفوعة)"
+                                        description="ميزة الكورس: سعر قليل، شامل، جروب متابعة وفيدباك."
+                                    />
+                                    <div className="p-3 bg-gray-50 border-t">
+                                        <span className="font-semibold flex items-center gap-2"><Icon name="youtube" className="w-5 h-5" /> لو عاوز حاجة مجانية (يوتيوب):</span>
                                     </div>
-                                    {/* --- END FIX 2 --- */}
+                                    <RecommendationLink 
+                                        href="https://youtube.com/playlist?list=PLsO4nF1GHw-NRT6LoFtGm_V57wjk_nncS&si=9Oh0TcO8ViTiJ2jC"
+                                        icon="play-circle"
+                                        title="كورس كانفا مجاني علي اليوتيوب"
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtu.be/bSiemfHdFtI?si=QgHBFsJO52grQ_yE"
+                                        icon="play-circle"
+                                        title="Capcut يوتيوب (للكمبيوتر)"
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtube.com/playlist?list=PLs-hceiryD_hjBCEDQMdCRPAhaR8Xemye&si=1NKlVSQ3DZp7kIys"
+                                        icon="play-circle"
+                                        title="Capcut علي الهاتف"
+                                    />
                                 </div>
-                                
-                                {/* --- Section: Content Writing --- */}
-                                <div className="border-t pt-4">
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">كتابة محتوى (Content Writing)</h5>
-                                     <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://www.facebook.com/share/p/1EfMGRNcqa/"
-                                            icon="book-copy"
-                                            title="ترشيحات مجانية ومدفوعة"
-                                            description="بوست شامل لأفضل مصادر تعلم كتابة المحتوى"
-                                        />
-                                    </div>
-                                </div>
+                            </NestedAccordion>
 
-                                {/* --- Section: Media Buying --- */}
-                                <div className="border-t pt-4">
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">ميديا باينج (إعلانات ممولة)</h5>
-                                     <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://www.facebook.com/share/p/19uhZmBKuu/"
-                                            icon="dollar-sign"
-                                            title="افضل الكورسات المتاحة"
-                                            description="بوست يجمع أفضل كورسات الإعلانات الممولة"
-                                        />
-                                    </div>
+                            <NestedAccordion
+                                title="كتابة محتوى (Content Writing)"
+                                icon="book-copy"
+                                isOpen={openNestedAccordion === "content"}
+                                onToggle={() => handleNestedToggle("content")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://www.facebook.com/share/p/1EfMGRNcqa/"
+                                        icon="book-copy"
+                                        title="ترشيحات مجانية ومدفوعة"
+                                        description="بوست شامل لأفضل مصادر تعلم كتابة المحتوى"
+                                    />
                                 </div>
+                            </NestedAccordion>
+                            
+                            <NestedAccordion
+                                title="ميديا باينج (إعلانات ممولة)"
+                                icon="dollar-sign"
+                                isOpen={openNestedAccordion === "media"}
+                                onToggle={() => handleNestedToggle("media")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://www.facebook.com/share/p/19uhZmBKuu/"
+                                        icon="dollar-sign"
+                                        title="افضل الكورسات المتاحة"
+                                        description="بوست يجمع أفضل كورسات الإعلانات الممولة"
+                                    />
+                                </div>
+                            </NestedAccordion>
 
-                                {/* --- Section: Digital Marketing --- */}
-                                <div className="border-t pt-4">
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">Digital Marketing</h5>
-                                     <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://t.me/matrixmena/1000"
-                                            icon="briefcase"
-                                            title="Digital marketing workshop"
-                                            description="ورشة عمل في التسويق الرقمي"
-                                        />
-                                        {/* --- MOVED HERE (Query 1) --- */}
-                                        <RecommendationLink 
-                                            href="https://youtube.com/playlist?list=PLxe78bIBB8nVGSQbYw6MLKfWuNQmnjKdh&si=7s5NGI-gn7CVgqT-"
-                                            icon="youtube"
-                                            title="كورس التسويق الالكتروني بمساعدة الذكاء الاصطناعي"
-                                        />
-                                    </div>
+                            <NestedAccordion
+                                title="Digital Marketing"
+                                icon="briefcase"
+                                isOpen={openNestedAccordion === "marketing"}
+                                onToggle={() => handleNestedToggle("marketing")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://t.me/matrixmena/1000"
+                                        icon="briefcase"
+                                        title="Digital marketing workshop"
+                                        description="ورشة عمل في التسويق الرقمي"
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtube.com/playlist?list=PLxe78bIBB8nVGSQbYw6MLKfWuNQmnjKdh&si=7s5NGI-gn7CVgqT-"
+                                        icon="youtube"
+                                        title="كورس التسويق الالكتروني بمساعدة الذكاء الاصطناعي"
+                                    />
                                 </div>
-                                
-                                {/* --- Section: Automation --- */}
-                                <div className="border-t pt-4">
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">لتعلم الأتمتة (Automation)</h5>
-                                    <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://youtu.be/9bMy9C8wIyg?si=WuUN5xmThiWDfgvO"
-                                            icon="play-circle"
-                                            title="مقدمة عن الأتمتة (فيديو)"
-                                        />
-                                         <RecommendationLink 
-                                            href="https://www.facebook.com/share/p/1B7G57H4KS/"
-                                            icon="file-text"
-                                            title="الأتمتة وأنواعها وخارطة الطريق"
-                                        />
-                                         <RecommendationLink 
-                                            href="https://www.facebook.com/share/p/17aTwCbtsA/"
-                                            icon="map"
-                                            title="خارطة الطريق لتعلمها"
-                                        />
-                                        {/* --- FIX 3: Reformat n8n links --- */}
-                                        <div className="p-3 bg-gray-50 border-t">
-                                            <div className="flex items-center gap-3">
-                                                <Icon name="list-checks" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
-                                                <span className="flex-grow font-semibold">أفضل مصادر مجانية لتعلم n8n (بدون برمجة):</span>
-                                            </div>
+                            </NestedAccordion>
+
+                            <NestedAccordion
+                                title="لتعلم الأتمتة (Automation)"
+                                icon="repeat"
+                                isOpen={openNestedAccordion === "automation"}
+                                onToggle={() => handleNestedToggle("automation")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://youtu.be/9bMy9C8wIyg?si=WuUN5xmThiWDfgvO"
+                                        icon="play-circle"
+                                        title="مقدمة عن الأتمتة (فيديو)"
+                                    />
+                                     <RecommendationLink 
+                                        href="https://www.facebook.com/share/p/1B7G57H4KS/"
+                                        icon="file-text"
+                                        title="الأتمتة وأنواعها وخارطة الطريق"
+                                    />
+                                     <RecommendationLink 
+                                        href="https://www.facebook.com/share/p/17aTwCbtsA/"
+                                        icon="map"
+                                        title="خارطة الطريق لتعلمها"
+                                    />
+                                    <div className="p-3 bg-gray-50 border-t">
+                                        <div className="flex items-center gap-3">
+                                            <Icon name="list-checks" className="w-5 h-5 text-[--accent-green] flex-shrink-0" />
+                                            <span className="flex-grow font-semibold">أفضل مصادر مجانية لتعلم n8n (بدون برمجة):</span>
                                         </div>
-                                        <RecommendationLink 
-                                            href="https://youtube.com/playlist?list=PLLHIYYlcgk6KN58UnPm8q1btNHLDJlYto&si=DFh8wDJR0dyBD1mT"
-                                            icon="youtube"
-                                            title="n8n with Karim (Playlist)"
-                                        />
-                                        <RecommendationLink 
-                                            href="https://youtube.com/playlist?list=PLZ42ZUInDWC79Bw1K_tYQhUPfFRV7fy8v&si=YAq1RH85DUo7l-Ak"
-                                            icon="youtube"
-                                            title="احترف Agentic AI Engineering (Playlist)"
-                                        />
-                                        {/* --- END FIX 3 --- */}
                                     </div>
+                                    <RecommendationLink 
+                                        href="https://youtube.com/playlist?list=PLLHIYYlcgk6KN58UnPm8q1btNHLDJlYto&si=DFh8wDJR0dyBD1mT"
+                                        icon="youtube"
+                                        title="n8n with Karim (Playlist)"
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtube.com/playlist?list=PLZ42ZUInDWC79Bw1K_tYQhUPfFRV7fy8v&si=YAq1RH85DUo7l-Ak"
+                                        icon="youtube"
+                                        title="احترف Agentic AI Engineering (Playlist)"
+                                    />
                                 </div>
-                                
-                            </div>
+                            </NestedAccordion>
+
                         </Accordion>
 
                          <Accordion 
@@ -1135,52 +1223,55 @@
                             isOpen={openAccordion === "resources"} 
                             onToggle={() => handleToggle("resources")}
                         >
-                            <div className="text-gray-700 space-y-4">
-                                <div>
-                                    <h5 className="font-bold text-lg mb-2 text-[--accent-green]">أفضل صفحات لمتابعة محتوى الذكاء الاصطناعي</h5>
-                                    {/* MODIFICATION: Removed ul/li, using simple divs */}
-                                    <div className="space-y-3 pt-2">
-                                        <a href="https://drive.google.com/file/d/1qeKaJ8vr8gmBNCR-QLTmLgqXJPcKhFcs/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                                            <Icon name="youtube" className="w-5 h-5 text-red-600" />
-                                            <span>يوتيوب</span>
-                                        </a>
-                                        <a href="https://drive.google.com/file/d/1dtRwvwG4B3SqlFgEBxD1zLM8iRWlE8vX/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                                            <Icon name="facebook" className="w-5 h-5 text-blue-600" />
-                                            <span>فيسبوك</span>
-                                        </a>
-                                        <a href="https://drive.google.com/file/d/1lOOh_34fP9g8lsiYQtS8WGm1j59evVil/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                                            <Icon name="twitter" className="w-5 h-5 text-blue-400" />
-                                            <span>تويتر (X)</span>
-                                        </a>
-                                    </div>
-                                    {/* END MODIFICATION */}
+                            <NestedAccordion
+                                title="أفضل صفحات لمتابعة محتوى AI"
+                                icon="users"
+                                isOpen={openNestedAccordion === "follow"}
+                                onToggle={() => handleNestedToggle("follow")}
+                            >
+                                <div className="space-y-3 pt-2">
+                                    <a href="https://drive.google.com/file/d/1qeKaJ8vr8gmBNCR-QLTmLgqXJPcKhFcs/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                        <Icon name="youtube" className="w-5 h-5 text-red-600" />
+                                        <span>يوتيوب</span>
+                                    </a>
+                                    <a href="https://drive.google.com/file/d/1dtRwvwG4B3SqlFgEBxD1zLM8iRWlE8vX/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                        <Icon name="facebook" className="w-5 h-5 text-blue-600" />
+                                        <span>فيسبوك</span>
+                                    </a>
+                                    <a href="https://drive.google.com/file/d/1lOOh_34fP9g8lsiYQtS8WGm1j59evVil/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="hover:text-[--accent-green] flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                        <Icon name="twitter" className="w-5 h-5 text-blue-400" />
+                                        <span>تويتر (X)</span>
+                                    </a>
                                 </div>
-                                
-                                {/* --- MOVED HERE (Query 3) --- */}
-                                <div className="border-t pt-4">
-                                     <h5 className="font-bold text-lg mb-2 text-[--accent-green]">بودكاست عن الذكاء الاصطناعي</h5>
-                                     <div className="flex flex-col rounded-lg overflow-hidden border">
-                                        <RecommendationLink 
-                                            href="https://youtu.be/7WvKcFsAj6E?si=R0CQAof252pcSUtx"
-                                            icon="podcast"
-                                            title="بودكاست محمد جودت عن حقيقة الـ AI"
-                                            description="بتكلمك عن الذكاء الاصطناعي ،، ايه هو ،، بدأ ازاي ،،اللي وصلناله ،، رايحين لفين..."
-                                        />
-                                        <RecommendationLink 
-                                            href="https://youtu.be/UsODl3Ay0CM?si=ZXGslETVO7EZ-YLP"
-                                            icon="podcast"
-                                            title="بودكاست تطور الذكاء الاصطناعي واغتنام الفرص"
-                                        />
-                                        <RecommendationLink 
-                                            href="https://youtu.be/WjpPDYibONU?si=dN-7w9To4yaKKUxX"
-                                            icon="podcast"
-                                            title="دور العرب في طفرة الذكاء الاصطناعي" /* <-- CORRECTED (Query 2) */
-                                        />
-                                    </div>
+                            </NestedAccordion>
+                            
+                            <NestedAccordion
+                                title="بودكاست عن الذكاء الاصطناعي"
+                                icon="podcast"
+                                isOpen={openNestedAccordion === "podcast"}
+                                onToggle={() => handleNestedToggle("podcast")}
+                            >
+                                <div className="flex flex-col rounded-lg overflow-hidden border">
+                                    <RecommendationLink 
+                                        href="https://youtu.be/7WvKcFsAj6E?si=R0CQAof252pcSUtx"
+                                        icon="podcast"
+                                        title="بودكاست محمد جودت عن حقيقة الـ AI"
+                                        description="بتكلمك عن الذكاء الاصطناعي ،، ايه هو ،، بدأ ازاي ،،اللي وصلناله ،، رايحين لفين..."
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtu.be/UsODl3Ay0CM?si=ZXGslETVO7EZ-YLP"
+                                        icon="podcast"
+                                        title="بودكاست تطور الذكاء الاصطناعي واغتنام الفرص"
+                                    />
+                                    <RecommendationLink 
+                                        href="https://youtu.be/WjpPDYibONU?si=dN-7w9To4yaKKUxX"
+                                        icon="podcast"
+                                        title="دور العرب في طفرة الذكاء الاصطناعي"
+                                    />
                                 </div>
-                            </div>
+                            </NestedAccordion>
+
                         </Accordion>
-                        {/* --- PODCAST ACCORDION REMOVED FROM HERE --- */}
                     </div>
                     
                     <div>
@@ -1240,6 +1331,8 @@
         const App = () => {
             const [theme, setTheme] = useState('light');
             const [activeTab, setActiveTab] = useState('home');
+            // FIX: Remove showWelcome state, handle directly in script
+            // const [showWelcome, setShowWelcome] = useState(true); 
 
             useEffect(() => {
                 const storedTheme = localStorage.getItem('theme');
@@ -1268,6 +1361,10 @@
                 setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
             };
 
+            // const handleStart = () => {
+            //     setShowWelcome(false);
+            // };
+
             const handleTabChange = useCallback((tabId) => {
                 setActiveTab(tabId);
                 window.scrollTo(0, 0);
@@ -1283,6 +1380,10 @@
                     default: return <HomeTab />;
                 }
             };
+
+            // if (showWelcome) {
+            //     return <WelcomeScreen onStart={handleStart} />;
+            // }
 
             return (
                 <div id="app-content">
